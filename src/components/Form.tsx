@@ -1,55 +1,89 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { useQuery } from 'react-query';
-import { TextField, Button, CircularProgress } from '@mui/material';
-
-interface FormData {
-  message: string;
-  category: string;
-}
+import {
+  Button,
+  CircularProgress,
+  MenuItem,
+  Snackbar,
+  TextField,
+} from "@mui/material";
+import { Category } from "../interfaces/Category";
+import { FormData } from "../interfaces/FormData";
+import { useFormHandler } from "../hooks/useFormHandler";
 
 const Form: React.FC = () => {
-  const { register, handleSubmit } = useForm<FormData>();
-  const { data, isLoading } = useQuery('categories', async () => {
-    const response = await fetch('/categories');
-    return response.json();
-  });
-
   const onSubmit = (data: FormData) => {
-    console.log(data);
+    mutation.mutate(data, {
+      onSuccess: () => {
+        setSnackbarMessage("Notification sent successfully");
+        setSnackbarOpen(true);
+      },
+      onError: () => {
+        setSnackbarMessage("Failed to send notification");
+        setSnackbarOpen(true);
+      },
+    });
   };
 
+  const {
+    message,
+    category,
+    snackbarOpen,
+    snackbarMessage,
+    handleMessageChange,
+    handleCategoriesChange,
+    register,
+    handleSubmit,
+    isLoading,
+    categories,
+    mutation,
+    setSnackbarOpen,
+    setSnackbarMessage,
+  } = useFormHandler({ onSubmit });
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <TextField
-        {...register('message')}
-        label="Message"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-      />
-      {isLoading ? (
-        <CircularProgress />
-      ) : (
+    <>
+      <form onSubmit={handleSubmit}>
         <TextField
-          {...register('category')}
-          label="Category"
-          select
+          {...register("message")}
+          multiline
+          rows={4}
+          label="Message"
           variant="outlined"
           fullWidth
           margin="normal"
-        >
-          {data?.map((category: string) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </TextField>
-      )}
-      <Button type="submit" variant="contained" color="primary">
-        Submit
-      </Button>
-    </form>
+          value={message}
+          onChange={handleMessageChange}
+        />
+        {isLoading ? (
+          <CircularProgress />
+        ) : (
+          <TextField
+            {...register("categoryId")}
+            label="Category"
+            select
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={category}
+            onChange={handleCategoriesChange}
+          >
+            {categories?.map((category: Category) => (
+              <MenuItem key={category.id} value={category.id}>
+                {category.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        )}
+        <Button type="submit" variant="contained" color="primary">
+          Submit
+        </Button>
+      </form>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        message={snackbarMessage}
+      />
+    </>
   );
 };
 
