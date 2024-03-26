@@ -2,6 +2,7 @@ import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useQuery, useMutation } from "react-query";
 import { FormData } from "../interfaces/FormData";
+import { API_URL } from "../constants";
 
 interface UseFormProps {
   onSubmit: (data: FormData) => void;
@@ -23,12 +24,12 @@ export const useFormHandler = ({ onSubmit }: UseFormProps) => {
 
   const { register, handleSubmit } = useForm<FormData>();
   const { data, isLoading } = useQuery("categories", async () => {
-    const response = await fetch("http://localhost:8000/categories");
+    const response = await fetch(`${API_URL}/categories`);
     return response.json();
   });
 
   const mutation = useMutation((formData: FormData) =>
-    fetch("http://localhost:8000/notifications/send", {
+    fetch(`${API_URL}/notifications/send`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
