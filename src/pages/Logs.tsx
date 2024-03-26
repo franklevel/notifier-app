@@ -1,66 +1,56 @@
 import React from "react";
 import {
-  Container,
+  CircularProgress,
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
+  Paper,
+  Container,
+  Typography,
 } from "@mui/material";
+import { useFetchNotifications } from "../hooks/useFecthNotifications";
+import { Notification } from "../interfaces/Notification";
 import Navbar from "../components/NavBar";
 
 const Logs: React.FC = () => {
-  // Mocked data
-  const logs = [
-    {
-      id: 1,
-      message: "Log message 1",
-      category: "Category A",
-      channel: "Channel X",
-      timestamp: "2022-04-01 10:00:00",
-    },
-    {
-      id: 2,
-      message: "Log message 2",
-      category: "Category B",
-      channel: "Channel Y",
-      timestamp: "2022-04-01 11:00:00",
-    },
-    {
-      id: 3,
-      message: "Log message 3",
-      category: "Category C",
-      channel: "Channel Z",
-      timestamp: "2022-04-01 12:00:00",
-    },
-  ];
+  const { data: notifications, isLoading, isError } = useFetchNotifications();
+
+  if (isLoading) return <CircularProgress />;
+  if (isError) return <div>Error fetching notifications</div>;
 
   return (
     <Container maxWidth="xl">
       <Navbar />
-      <h1>Log History</h1>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Message</TableCell>
-            <TableCell>Category</TableCell>
-            <TableCell>Channel</TableCell>
-            <TableCell>Timestamp</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {logs.map((log) => (
-            <TableRow key={log.id}>
-              <TableCell>{log.id}</TableCell>
-              <TableCell>{log.message}</TableCell>
-              <TableCell>{log.category}</TableCell>
-              <TableCell>{log.channel}</TableCell>
-              <TableCell>{log.timestamp}</TableCell>
+      <Typography variant="h4">Logs History</Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Message</TableCell>
+              <TableCell>Category</TableCell>
+              <TableCell>Channel</TableCell>
+              <TableCell>Created At</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {(notifications as unknown as Notification[])?.map(
+              (notification: Notification) => (
+                <TableRow key={notification.id}>
+                  <TableCell>{notification.id}</TableCell>
+                  <TableCell>{notification.message}</TableCell>
+                  <TableCell>{notification.category?.name}</TableCell>
+                  <TableCell>{notification.channel?.name}</TableCell>
+                  <TableCell>{notification.createdAt}</TableCell>
+                </TableRow>
+              )
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Container>
   );
 };
