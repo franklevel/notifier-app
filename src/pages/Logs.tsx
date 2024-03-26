@@ -31,6 +31,7 @@ const Logs: React.FC = () => {
             <TableRow>
               <TableCell>ID</TableCell>
               <TableCell>Message</TableCell>
+              <TableCell>User</TableCell>
               <TableCell>Category</TableCell>
               <TableCell>Channel</TableCell>
               <TableCell>Created At</TableCell>
@@ -42,6 +43,7 @@ const Logs: React.FC = () => {
                 <TableRow key={notification.id}>
                   <TableCell>{notification.id}</TableCell>
                   <TableCell>{notification.message}</TableCell>
+                  <TableCell>{notification.user.name}</TableCell>
                   <TableCell>{notification.category?.name}</TableCell>
                   <TableCell>{notification.channel?.name}</TableCell>
                   <TableCell>{notification.createdAt}</TableCell>

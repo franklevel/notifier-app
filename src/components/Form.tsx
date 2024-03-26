@@ -39,6 +39,8 @@ const Form: React.FC = () => {
     setSnackbarMessage,
   } = useFormHandler({ onSubmit });
 
+  const isButtonDisabled = !category || !message;
+
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -73,7 +75,7 @@ const Form: React.FC = () => {
             ))}
           </TextField>
         )}
-        <Button type="submit" variant="contained" color="primary">
+        <Button type="submit" variant="contained" color="primary" disabled={isButtonDisabled}>
           Submit
         </Button>
       </form>
