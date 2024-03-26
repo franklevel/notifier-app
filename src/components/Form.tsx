@@ -8,10 +8,7 @@ import {
 import { Category } from "../interfaces/Category";
 import { FormData } from "../interfaces/FormData";
 import { useFormHandler } from "../hooks/useFormHandler";
-
-interface FormProps {
-  onSubmit: (data: FormData) => void;
-}
+import { FormProps } from "../interfaces/FormProps";
 
 const Form: React.FC<FormProps> = () => {
   const onSubmit = (data: FormData) => {
