@@ -9,7 +9,11 @@ import { Category } from "../interfaces/Category";
 import { FormData } from "../interfaces/FormData";
 import { useFormHandler } from "../hooks/useFormHandler";
 
-const Form: React.FC = () => {
+interface FormProps {
+  onSubmit: (data: FormData) => void;
+}
+
+const Form: React.FC<FormProps> = () => {
   const onSubmit = (data: FormData) => {
     mutation.mutate(data, {
       onSuccess: () => {
